@@ -1,16 +1,31 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
-import { Feather } from "@expo/vector-icons";
-import { Text, Input, Button } from "react-native-elements";
 import { useFonts } from "expo-font";
+import { useFocusEffect } from "@react-navigation/native";
+import { Context as AuthContext } from "../context/AuthContext";
+import AuthForm from "../components/AuthForm";
+import NavLink from "../components/NavLink";
 
-const SignupScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const SignupScreen = ({ navigation }) => {
+  const { state, signup, clearErrorMessage, tryLocalSignIn } = useContext(
+    AuthContext
+  );
 
   const [loaded] = useFonts({
     Montserrat: require("../../assets/fonts/Montserrat.ttf"),
   });
+
+  useEffect(() => {
+    tryLocalSignIn();
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        clearErrorMessage();
+      };
+    }, [])
+  );
 
   if (!loaded) {
     return null;
@@ -18,52 +33,16 @@ const SignupScreen = () => {
 
   return (
     <View style={styles.signUpContainer}>
-      <Text h3 style={styles.title}>
-        Sign Up for Tracker
-      </Text>
-      <Input
-        autoCapitalize="none"
-        autoCorrect={false}
-        placeholder="Email"
-        leftIcon={
-          <Feather
-            name="mail"
-            size={20}
-            color="#999"
-            style={{ marginHorizontal: 10 }}
-          />
-        }
-        style={styles.inputMail}
-        value={email}
-        onChangeText={setEmail}
+      <AuthForm
+        headerText="Sign Up for Tracker"
+        errorMessage={state.errorMessage}
+        onSubmit={signup}
+        submitButtonText="Sign Up"
       />
-      <Input
-        autoCapitalize="none"
-        autoCorrect={false}
-        placeholder="Password"
-        secureTextEntry
-        leftIcon={
-          <Feather
-            name="key"
-            size={20}
-            color="#999"
-            style={{ marginHorizontal: 10 }}
-          />
-        }
-        style={styles.inputPassword}
-        value={password}
-        onChangeText={setPassword}
+      <NavLink
+        textLink="Alerady have an Account? Go to Sign In"
+        toggleSignPage={() => navigation.navigate("SignIn")}
       />
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Sign Up"
-          buttonStyle={{
-            backgroundColor: "#3a86ff",
-            width: 200,
-            marginTop: 25,
-          }}
-        />
-      </View>
     </View>
   );
 };
@@ -75,10 +54,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginHorizontal: 10,
     marginBottom: 100,
-  },
-  title: {
-    color: "#5e60ce",
-    marginBottom: 40,
   },
 });
 

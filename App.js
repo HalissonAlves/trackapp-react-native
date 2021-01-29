@@ -1,5 +1,4 @@
-import React from "react";
-import { StyleSheet } from "react-native";
+import React, { useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -12,6 +11,7 @@ import TrackDetailScreen from "./src/screens/TrackDetailScreen";
 import TrackListScreen from "./src/screens/TrackListScreen";
 
 import { Provider as AuthProvider } from "./src/context/AuthContext";
+import { Context as AuthContext } from './src/context/AuthContext';
 
 const Tab = createBottomTabNavigator();
 
@@ -44,15 +44,19 @@ const AuthFlow = () => (
       component={SignupScreen}
       options={{ headerShown: false }}
     />
-    <Auth.Screen name="SignIn" component={SigninScreen} />
+    <Auth.Screen
+      name="SignIn"
+      component={SigninScreen}
+      options={{ headerShown: false }}
+    />
   </Auth.Navigator>
 );
 
 const App = () => {
-  const isSignedIn = null;
+  const { state } = useContext(AuthContext);
   return (
     <NavigationContainer>
-      {isSignedIn !== null ? <MainFlow /> : <AuthFlow />}
+      {state.isLogged !== null ? <MainFlow /> : <AuthFlow />}
     </NavigationContainer>
   );
 };
