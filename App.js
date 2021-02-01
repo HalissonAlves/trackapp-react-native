@@ -11,7 +11,8 @@ import TrackDetailScreen from "./src/screens/TrackDetailScreen";
 import TrackListScreen from "./src/screens/TrackListScreen";
 
 import { Provider as AuthProvider } from "./src/context/AuthContext";
-import { Context as AuthContext } from './src/context/AuthContext';
+import { Context as AuthContext } from "./src/context/AuthContext";
+import { View, ActivityIndicator } from "react-native";
 
 const Tab = createBottomTabNavigator();
 
@@ -54,9 +55,15 @@ const AuthFlow = () => (
 
 const App = () => {
   const { state } = useContext(AuthContext);
+  if (state.loading) {
+    return (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <ActivityIndicator size="large" color={666} />
+    </View>);
+  }
+
   return (
     <NavigationContainer>
-      {state.isLogged !== null ? <MainFlow /> : <AuthFlow />}
+      {state.token !== null ? <MainFlow /> : <AuthFlow />}
     </NavigationContainer>
   );
 };

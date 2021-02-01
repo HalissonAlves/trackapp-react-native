@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, addons } from "react-native";
 import { useFonts } from "expo-font";
 import { useFocusEffect } from "@react-navigation/native";
 import { Context as AuthContext } from "../context/AuthContext";
